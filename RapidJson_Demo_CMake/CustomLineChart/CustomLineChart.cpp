@@ -40,7 +40,7 @@ QChart* CustomLineChart::createLineChart()
 
     QList<QPointF> points;
     
-    for (int i = 18; i <= 31; ++i)
+    for (int i = 23; i <= 31; ++i)
     {
         QDateTime ddd(QDate(2021, 12, i));
         ddd.toMSecsSinceEpoch();
@@ -48,11 +48,6 @@ QChart* CustomLineChart::createLineChart()
         int count = 0;
         switch (i)
         {
-        case 18: count = 10; break;
-        case 19: count = 21; break;
-        case 20: count = 42; break;
-        case 21: count = 52; break;
-        case 22: count = 63; break;
         case 23: count = 49; break;
         case 24: count = 75; break;
         case 25: count = 155; break;
@@ -69,7 +64,8 @@ QChart* CustomLineChart::createLineChart()
         points.push_back(QPointF(ddd.toMSecsSinceEpoch(), count));
     }
 
-    for (int i = 1; i <= 2; ++i)
+    int endDay = 16;
+    for (int i = 1; i <= endDay; ++i)
     {
         QDateTime ddd(QDate(2022, 1, i));
         ddd.toMSecsSinceEpoch();
@@ -79,18 +75,20 @@ QChart* CustomLineChart::createLineChart()
         {
         case 1: count = 122; break;
         case 2: count = 90; break;
-        case 20: count = 42; break;
-        case 21: count = 52; break;
-        case 22: count = 63; break;
-        case 23: count = 49; break;
-        case 24: count = 75; break;
-        case 25: count = 155; break;
-        case 26: count = 150; break;
-        case 27: count = 175; break;
-        case 28: count = 151; break;
-        case 29: count = 155; break;
-        case 30: count = 161; break;
-        case 31: count = 174; break;
+        case 3: count = 95; break;
+        case 4: count = 35; break;
+        case 5: count = 63; break;
+        case 6: count = 57; break;
+        case 7: count = 46; break;
+        case 8: count = 30; break;
+        case 9: count = 15; break;
+        case 10: count = 13; break;
+        case 11: count = 8; break;
+        case 12: count = 6; break;
+        case 13: count = 8; break;
+        case 14: count = 4; break;
+        case 15: count = 1; break;
+        case 16: count = 0; break;
         default: break;
         }
 
@@ -114,7 +112,8 @@ QChart* CustomLineChart::createLineChart()
     points.push_back(QPointF(31, 174));
     points.push_back(QPointF(1, 174));
 #endif
-    series->append(points);
+    //series->append(points);
+    series->replace(points);
 
     series->setName(name + QString::number(nameIndex));
     nameIndex++;
@@ -122,25 +121,29 @@ QChart* CustomLineChart::createLineChart()
     //![2]
 
     QScatterSeries* scaSeries = new QScatterSeries(chart);
+    scaSeries->setName("background");
     scaSeries->setMarkerShape(QScatterSeries::MarkerShapeCircle); // 圆点
     scaSeries->setBorderColor(QColor(21, 100, 255));
     scaSeries->setBrush(QBrush(QColor(21, 100, 255)));
     scaSeries->setMarkerSize(12); // 离散点大小
 
-    scaSeries->append(points);
-
+    //scaSeries->append(points);
+    scaSeries->replace(points);
 
     bool ret = connect(scaSeries, &QScatterSeries::hovered, this, &CustomLineChart::slotPointHovered);
 
     chart->addSeries(scaSeries);
 
     QScatterSeries* scaSeries1 = new QScatterSeries(chart);
+    scaSeries1->setName("forgeground");
     scaSeries1->setMarkerShape(QScatterSeries::MarkerShapeCircle); // 圆点
     scaSeries1->setBorderColor(Qt::white);
     scaSeries1->setBrush(QBrush(Qt::white));
     scaSeries1->setMarkerSize(6); // 离散点大小
 
-    scaSeries1->append(points);
+    //scaSeries1->append(points);
+    scaSeries1->replace(points);
+
 
     scaSeries1->setPointLabelsFormat("@yPoint"); // 设置label格式
     scaSeries1->setPointLabelsVisible(); //设置显示label
@@ -152,10 +155,9 @@ QChart* CustomLineChart::createLineChart()
     // chart->removeSeries(series);
 
     chart->createDefaultAxes();
-    chart->axes(Qt::Horizontal).first()->setRange(18, 31);
+    //chart->axes(Qt::Horizontal).first()->setRange(18, 31);
     chart->axes(Qt::Vertical).first()->setRange(0, 190);
-    //![3]
-    //![4]
+
     // Add space to label to add space between labels and axis
     QValueAxis *axisY = qobject_cast<QValueAxis*>(chart->axes(Qt::Vertical).first());
     //axisY->setLabelFormat("%.1f  ");
@@ -169,28 +171,20 @@ QChart* CustomLineChart::createLineChart()
     axisY->setLabelsColor(QColor(0, 0, 0));
     axisY->setGridLineColor(QColor(24, 111, 167));
 
-
     QValueAxis *axisX = qobject_cast<QValueAxis*>(chart->axes(Qt::Horizontal).first());
     chart->removeAxis(axisX);
-#if 0
-    axisX->setLabelFormat("%g");
-    axisX->setTickCount(14);
-    axisX->setLinePen(linePen);
-    axisX->setLabelsColor(QColor(24, 111, 167));
-    axisX->setGridLineColor(QColor(24, 111, 167));
-#endif
 
     QDateTimeAxis* dateAxisX = new QDateTimeAxis(chart);
     dateAxisX->setFormat("yyyy/MM/dd");
-    dateAxisX->setTickCount(16);
+    dateAxisX->setTickCount(points.size());
 
     QDateTime min;
-    min.setDate(QDate(2021, 12, 18));
+    min.setDate(QDate(2021, 12, 23));
     QDateTime max;
-    max.setDate(QDate(2022, 1, 2));
+    max.setDate(QDate(2022, 1, endDay));
 
     dateAxisX->setRange(min, max);
-    dateAxisX->setLabelsAngle(60);
+    dateAxisX->setLabelsAngle(90);
 
     dateAxisX->setLinePen(linePen);
     dateAxisX->setLabelsColor(QColor(0, 0, 0));
@@ -202,6 +196,10 @@ QChart* CustomLineChart::createLineChart()
 
    // 设置主题，默认主题是:QChart::ChartThemeLight
     chart->setTheme(QChart::ChartThemeLight);
+
+    // 设置图例
+    chart->legend()->setAlignment(Qt::AlignTop);
+    //chart->legend()->seri
 
     return chart;
 }

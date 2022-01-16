@@ -79,7 +79,6 @@ int main(int argc, char *argv[])
 
     pTst->tstfunc2();
 
-
     QWidget widget;
     widget.resize(QSize(600, 600));
     widget.setWindowTitle("CMake Qt 测试");
